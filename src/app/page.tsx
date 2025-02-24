@@ -7,6 +7,13 @@ import "./globals.css";
 // 환경 변수로 API 키 가져오기
 const ACCESS_KEY = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
 
+// Unsplash 이미지 데이터 타입 정의
+interface UnsplashImage {
+  urls: {
+    regular: string;
+  };
+}
+
 export default function Gallery() {
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -24,10 +31,10 @@ export default function Gallery() {
       `https://api.unsplash.com/photos/random?count=${count}&client_id=${ACCESS_KEY}`
     )
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: UnsplashImage[]) => {
         setImages((prevImages) => [
           ...prevImages,
-          ...data.map((img: any) => img.urls.regular),
+          ...data.map((img) => img.urls.regular), // img의 타입이 UnsplashImage로 지정되어 있음
         ]);
       })
       .catch((err) => console.error("이미지 로드 오류:", err))
