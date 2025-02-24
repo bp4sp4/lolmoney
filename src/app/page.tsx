@@ -1,25 +1,96 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import "./globals.css";
 
-import { Confetti, type ConfettiRef } from "@/components/magicui/confetti";
+// 환경 변수로 API 키 가져오기
+const ACCESS_KEY = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
 
-export default function ConfettiDemo() {
-  const confettiRef = useRef<ConfettiRef>(null);
+export default function Gallery() {
+  const [images, setImages] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // 이미지를 불러오는 함수
+  const fetchImages = (count: number) => {
+    if (!ACCESS_KEY) {
+      console.error("API 키가 설정되지 않았습니다.");
+      return;
+    }
+
+    setLoading(true);
+
+    fetch(
+      `https://api.unsplash.com/photos/random?count=${count}&client_id=${ACCESS_KEY}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setImages((prevImages) => [
+          ...prevImages,
+          ...data.map((img: any) => img.urls.regular),
+        ]);
+      })
+      .catch((err) => console.error("이미지 로드 오류:", err))
+      .finally(() => setLoading(false));
+  };
+
+  // 처음에 이미지를 30개 로드
+  useEffect(() => {
+    fetchImages(30);
+  }, []);
+
+  // 랜덤 클래스와 IntersectionObserver 초기화
+  useEffect(() => {
+    const items = document.querySelectorAll(".grid__wrapper > div");
+    const classes = ["wide", "big", "tall"];
+
+    // 랜덤 클래스 부여
+    items.forEach((item) => {
+      const randomClass = classes[Math.floor(Math.random() * classes.length)];
+      item.classList.add(randomClass);
+    });
+
+    // IntersectionObserver 설정
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in-view");
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+
+    items.forEach((item) => observer.observe(item));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [images]);
 
   return (
-    <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background">
-      <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-center text-8xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
-        Confetti
-      </span>
+    <>
+      <h1 className="title">Gallery</h1>
+      <main className="grid__wrapper">
+        {images.map((src, index) => (
+          <div key={index}>
+            <Image src={src} alt="Gallery Image" width={300} height={200} />
+          </div>
+        ))}
+      </main>
 
-      <Confetti
-        ref={confettiRef}
-        className="absolute left-0 top-0 z-0 size-full"
-        onMouseEnter={() => {
-          confettiRef.current?.fire({});
-        }}
-      />
-    </div>
+      <div className="load-more-container">
+        <button
+          className="load-more-button"
+          onClick={() => fetchImages(10)}
+          disabled={loading}
+        >
+          {loading ? "로딩중..." : "더불러오기"}
+        </button>
+      </div>
+    </>
   );
 }
