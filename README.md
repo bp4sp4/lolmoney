@@ -4,7 +4,7 @@
 
 ## 작업기간 - 25/02/24
 
-- 홈페이지 - <a href="https://bp4sp4.github.io/CSSGrid/">Gallery</a>
+- 홈페이지 - <a href="https://lolmoney.vercel.app/">Gallery</a>
 
 <h2>📌 프로젝트 진행이유</h2>
 
