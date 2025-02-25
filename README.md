@@ -1,8 +1,6 @@
-## 24/02/04 CSS grid 연습 - 미니 프로젝트 완성 놀지마라 매일 공부하라
+## 25/02/25 CSS grid 연습 - 미니 프로젝트 완성 놀지마라 매일 공부하라
 
 ## 작업환경 : macOS, 작업툴 : VSCode
-
-## 작업기간 - 25/02/24
 
 - 홈페이지 - <a href="https://lolmoney.vercel.app/">Gallery</a>
 
