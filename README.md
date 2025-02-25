@@ -1,4 +1,4 @@
-## 24/01/03 CSS grid 연습 - 미니 프로젝트 완성
+## 24/02/04 CSS grid 연습 - 미니 프로젝트 완성 놀지마라 매일 공부하라
 
 ## 작업환경 : macOS, 작업툴 : VSCode
 
@@ -8,14 +8,16 @@
 
 <h2>📌 프로젝트 진행이유</h2>
 
+- Unsplash API 사용해 기존에있던 gallery 프로젝트를 Next.js 사용해서 이미지 로딩이 빠르게 되었다. 그리고 맨밑에 로딩하기를 통해 무한 이미지를 가져올수 있게 되었다.
+
 - CSS Grid를 사용해 본 적이 없어서 이를 학습하고 실제 프로젝트에서 활용해 보기 위해서 진행했다. CSS Grid는 레이아웃을 구성하는 데 매우 강력한 도구로, 그동안 많이 사용해본 flexbox와는 다른 방식으로 레이아웃을 조정할 수 있다. 이를 통해 더 다양한 레이아웃을 구현할 수 있으며, CSS Grid의 구조적인 장점과 편리함을 직접 체험하고 싶었다. 또한, CSS Grid의 레이아웃 방식을 이해하고 활용하는 경험을 쌓는 것이 나의 퍼블리싱 능력을 더욱 향상시킬 수 있다고 생각했다.
 
-- 시간이 지남에 따라 이를 유지하고 발전시키는 것이 중요합니다. 웹 디자인과 사용자 경험을 고려한 실용적인 레이아웃을 구현하며 이를 통해 클라이언트나 회사에 나의 능력을 잘 어필할 수 있는 포트폴리오를 만들고자 했다.
+- 시간이 지남에 따라 이를 유지하고 발전시키는 것이 중요하다. 웹 디자인과 사용자 경험을 고려한 실용적인 레이아웃을 구현하며 이를 통해 클라이언트나 회사에 나의 능력을 잘 어필할 수 있는 포트폴리오를 만들고자 했다.
 
 <h2>✈ 프로젝트 진행</h2>
 
 - 기본목표 시멘틱코드 진행
-- 사진은 약 50개, <a href="https://www.lifeofpix.com/">라이브 오브 픽스 </a> 에서 사용했다.
+- 사진은 Unsplash API를 통해 가져오게 되었다.
 - 헤더
   - Gallery 라는 홈페이지 타이틀로 시작해야하기 때문에 폰트선정에 시간을 조금 투자했다 여러 폰트 적용후 영어로 작성했을때 가잠 느낌있는 신라문화체로 결정
 - 메인
@@ -25,11 +27,20 @@
     - 처음 로딩되는 이미지들의 css grid 랜덤 클래스 부여
 
       ```
-      document.addEventListener("DOMContentLoaded", function () {
-      const items = document.querySelectorAll(".grid__wrapper > div");
-      const classes = ["wide", "big", "tall"];
+      // api 가져오기
 
-      // 랜덤 클래스 부여
+      const ACCESS_KEY = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
+
+       fetch(
+      `https://api.unsplash.com/photos/random?count=${count}&client_id=${ACCESS_KEY}`
+      )
+      .then((res) => res.json())
+      .then((data: UnsplashImage[]) => {
+        setImages((prevImages) => [
+          ...prevImages,
+          ...data.map((img) => img.urls.regular), // img의 타입이 UnsplashImage로 지정되어 있음
+        ]);
+      })
 
       items.forEach((item) => {
         const randomClass = classes[Math.floor(Math.random() * classes.length)];
@@ -99,8 +110,6 @@
 - 아쉬운 점은 이미지가 많고, 특히 큰 이미지들이 로딩될 때 시간이 길어지면 사용자 경험에 영향을 줄 수 있는데, 이를 처리하는 방법에 대해 고민이 많았습니다. 스켈레톤 UI를 HTML과 CSS만으로 구현하는 데에는 한계가 있어, 스켈레톤 UI가 완벽하게 동작하도록 구현하는 데 어려움이 있었다.
 
 - HTML과 CSS만으로는 로딩 중인 이미지를 효과적으로 처리하거나, 이미지가 로딩되기 전에 대체 콘텐츠를 보여주는 등의 동적 처리가 어렵다 보니 하드 코딩 방식으로 이를 구현해야 했습니다. 이런 방식은 코드가 길어지고 관리하기 어려워졌으며, 실제 프로젝트에서 효율적으로 적용하기 어려운 점이 많았습니다.
-
-- 결국, 스켈레톤 UI에 대한 구현을 포기하게 되었고, 더 나은 해결책을 찾기 위해서는 JavaScript를 이용한 동적인 처리가 필요하다는 것을 깨달았습니다. 이 점이 아쉬웠고, 향후 이미지 로딩 시간을 효율적으로 처리할 수 있는 방법을 찾아보는 것이 중요하다고 느꼈습니다.
 
 <h2>24/01/06</h2>
 
