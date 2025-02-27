@@ -4,10 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import "./globals.css";
 
-// 환경 변수로 API 키 가져오기
 const ACCESS_KEY = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
 
-// Unsplash 이미지 데이터 타입 정의
 interface UnsplashImage {
   urls: {
     regular: string;
@@ -17,8 +15,8 @@ interface UnsplashImage {
 export default function Gallery() {
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [hoveredImage, setHoveredImage] = useState<number | null>(null);
 
-  // 이미지를 불러오는 함수
   const fetchImages = (count: number) => {
     if (!ACCESS_KEY) {
       console.error("API 키가 설정되지 않았습니다.");
@@ -34,30 +32,26 @@ export default function Gallery() {
       .then((data: UnsplashImage[]) => {
         setImages((prevImages) => [
           ...prevImages,
-          ...data.map((img) => img.urls.regular), // img의 타입이 UnsplashImage로 지정되어 있음
+          ...data.map((img) => img.urls.regular),
         ]);
       })
       .catch((err) => console.error("이미지 로드 오류:", err))
       .finally(() => setLoading(false));
   };
 
-  // 처음에 이미지를 30개 로드
   useEffect(() => {
     fetchImages(30);
   }, []);
 
-  // 랜덤 클래스와 IntersectionObserver 초기화
   useEffect(() => {
     const items = document.querySelectorAll(".grid__wrapper > div");
     const classes = ["wide", "big", "tall"];
 
-    // 랜덤 클래스 부여
     items.forEach((item) => {
       const randomClass = classes[Math.floor(Math.random() * classes.length)];
       item.classList.add(randomClass);
     });
 
-    // IntersectionObserver 설정
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -66,9 +60,7 @@ export default function Gallery() {
           }
         });
       },
-      {
-        threshold: 0.1,
-      }
+      { threshold: 0.1 }
     );
 
     items.forEach((item) => observer.observe(item));
@@ -78,13 +70,49 @@ export default function Gallery() {
     };
   }, [images]);
 
+  const handleDownload = (src: string) => {
+    fetch(src, { mode: "cors" })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "image.jpg";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((err) => console.error("다운로드 오류:", err));
+  };
+
   return (
     <>
       <h1 className="title">Gallery</h1>
       <main className="grid__wrapper">
         {images.map((src, index) => (
-          <div key={index}>
-            <Image src={src} alt="Gallery Image" width={300} height={200} />
+          <div
+            key={index}
+            onMouseEnter={() => setHoveredImage(index)}
+            onMouseLeave={() => setHoveredImage(null)}
+          >
+            <Image
+              src={src}
+              alt="Gallery Image"
+              width={300}
+              height={200}
+              crossOrigin="anonymous"
+            />
+            {hoveredImage === index && (
+              <button
+                className="download-button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDownload(src);
+                }}
+              >
+                Download
+              </button>
+            )}
           </div>
         ))}
       </main>
