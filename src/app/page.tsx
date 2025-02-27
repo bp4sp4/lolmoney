@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import "./globals.css";
+import Footer from "@/components/footer";
 
 const ACCESS_KEY = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
 
@@ -126,6 +127,7 @@ export default function Gallery() {
           {loading ? "로딩중..." : "더불러오기"}
         </button>
       </div>
+      <Footer />
     </>
   );
 }

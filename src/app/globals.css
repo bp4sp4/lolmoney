@@ -116,3 +116,42 @@ img {
 .download-button:hover {
   background-color: rgba(255, 255, 255, 1);
 }
+
+/* 푸터 */
+#footer__wrapper {
+  color: white;
+  text-align: center;
+}
+
+#footer__wrapper__desc {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  border-top: 1px solid #ededed1f;
+  margin-top: 2rem;
+}
+
+#footer__link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 0;
+}
+
+#bar {
+  margin: 0 10px 0 10px;
+}
+
+#footer__link>p>a {
+  color: white;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+#footer__link>p>a:hover {
+  text-decoration: underline;
+}
+
+.copyright {
+  font-size: 15px;
+  line-height: 5px;
+}
