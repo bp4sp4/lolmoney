@@ -1,5 +1,7 @@
 ## 25/02/25 CSS grid 연습 - 미니 프로젝트 완성 놀지마라 매일 공부하라
 
+## 기존 HTML -> Next.js 교체 스킬업
+
 ## 작업환경 : macOS, 작업툴 : VSCode
 
 - 홈페이지 - <a href="https://lolmoney.vercel.app/">Gallery</a>
